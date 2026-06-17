@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دیباچه هنر — دانشنامه جامع هنر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-deep: #050d1a;
+    --bg-dark: #0a1628;
+    --bg-mid: #0f1e38;
+    --bg-card: rgba(15,30,60,0.55);
+    --glass-bg: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.09);
+    --glass-hover: rgba(255,255,255,0.07);
+    --blue-bright: #4f8ef7;
+    --blue-glow: #1d4ed8;
+    --gold: #f5c842;
+    --gold-soft: #e8b84b;
+    --text-primary: rgba(255,255,255,0.95);
+    --text-secondary: rgba(255,255,255,0.6);
+    --text-muted: rgba(255,255,255,0.35);
+    --navbar-h: 64px;
+  }
+  html { font-size: 16px; }
+  body {
+    font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    direction: rtl;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(29,78,216,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(79,142,247,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 40%, rgba(245,200,66,0.04) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+  .glass {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+  }
+  .app-shell { display: flex; flex-direction: column; min-height: 100vh; position: relative; z-index: 1; }
+  .app-main { flex: 1; padding-top: var(--navbar-h); }
+
+  /* Navbar */
+  .navbar {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--navbar-h);
+    background: rgba(5,13,26,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--glass-border); z-index: 100;
+  }
+  .navbar-inner {
+    max-width: 1280px; margin: 0 auto; height: 100%; display: flex; align-items: center; gap: 32px; padding: 0 24px;
+  }
+  .navbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex-shrink: 0; }
+  .navbar-logo-icon { font-size: 24px; }
+  .navbar-logo-text { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .navbar-links { display: flex; align-items: center; gap: 4px; flex: 1; }
+  .nav-link { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 10px; text-decoration: none; color: var(--text-secondary); font-size: 0.88rem; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
+  .nav-link:hover { background: var(--glass-hover); color: var(--text-primary); }
+  .nav-link.active { background: rgba(79,142,247,0.15); color: var(--blue-bright); }
+
+  /* Search Bar */
+  .search-container { position: relative; }
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 7px 12px;
+    transition: all 0.2s; max-width: 320px; width: 100%;
+  }
+  .search-bar.open { border-color: var(--blue-bright); background: rgba(255,255,255,0.08); }
+  .search-bar svg { color: var(--text-muted); flex-shrink: 0; width: 16px; height: 16px; }
+  .search-input {
+    flex: 1; background: transparent; border: none; color: var(--text-primary);
+    font-family: inherit; font-size: 0.82rem; outline: none; direction: rtl; padding: 0;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-clear { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px; }
+  .search-clear:hover { color: var(--text-primary); }
+  .search-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+    z-index: 300; max-height: 400px; overflow-y: auto;
+    border-radius: 16px; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-width: 280px; background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  }
+  .search-loading { display: flex; justify-content: center; padding: 20px; }
+  .search-empty { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+  .search-group { display: flex; flex-direction: column; gap: 4px; }
+  .search-group-title { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); padding: 4px 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .search-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; background: transparent; border: none; color: var(--text-primary); text-align: right; font-family: inherit; font-size: 0.85rem; transition: all 0.15s; width: 100%; }
+  .search-item:hover { background: rgba(255,255,255,0.05); }
+  .search-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .search-avatar { width: 26px; height: 26px; border-radius: 50%; background: rgba(79,142,247,0.15); color: var(--blue-bright); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .search-item-name { flex: 1; font-weight: 500; }
+  .search-item-meta { font-size: 0.72rem; color: var(--text-muted); }
+  .spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid var(--glass-border); border-top-color: var(--blue-bright); animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Hero */
+  .home-page { padding: 0 0 80px; }
+  .hero {
+    position: relative; min-height: 80vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden; padding: 80px 24px 60px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-badge {
+    display: inline-block; padding: 6px 16px; border-radius: 20px;
+    background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3);
+    color: var(--blue-bright); font-size: 0.82rem; font-weight: 600; margin-bottom: 24px;
+  }
+  .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+  .hero-title-accent { background: linear-gradient(135deg, var(--blue-bright), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-desc { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 36px; }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue-glow), var(--blue-bright));
+    color: white; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.2s;
+    text-decoration: none; box-shadow: 0 4px 15px rgba(79,142,247,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,142,247,0.4); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; border-radius: 12px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-secondary); font-family: inherit; font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-ghost:hover { background: var(--glass-hover); color: var(--text-primary); }
+  .hero-stats { position: relative; z-index: 1; display: flex; gap: 20px; margin-top: 60px; flex-wrap: wrap; justify-content: center; }
+  .stat-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 36px; min-width: 130px; }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+  .stat-lbl { font-size: 0.8rem; color: var(--text-secondary); }
+
+  /* Styles Grid */
+  .home-section { max-width: 1200px; margin: 0 auto; padding: 60px 24px 0; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .section-title { font-size: 1.4rem; font-weight: 700; }
+  .styles-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .style-preview-card {
+    display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .style-preview-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+  .spc-color { height: 4px; }
+  .spc-body { padding: 14px 16px; }
+  .spc-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+  .spc-period { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* Articles Grid */
+  .articles-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .article-preview-card {
+    display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    overflow: hidden; transition: transform 0.2s;
+  }
+  .article-preview-card:hover { transform: translateY(-3px); }
+  .apc-cover { width: 100%; height: 160px; object-fit: cover; }
+  .apc-body { padding: 16px; }
+  .apc-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .apc-excerpt { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+  /* Styles Timeline Page */
+  .styles-page { max-width: 1000px; margin: 0 auto; padding: 48px 24px 100px; }
+  .styles-header { text-align: center; margin-bottom: 64px; }
+  .styles-title { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .styles-sub { color: var(--text-secondary); font-size: 0.95rem; }
+  .timeline-wrapper { position: relative; }
+  .timeline-line {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(79,142,247,0.4) 5%, rgba(79,142,247,0.4) 95%, transparent);
+    transform: translateX(-50%);
+  }
+  .timeline-items { display: flex; flex-direction: column; gap: 40px; }
+  .timeline-row { display: grid; grid-template-columns: 1fr 20px 1fr; align-items: center; gap: 0; }
+  .timeline-row.left .timeline-card { grid-column: 1; justify-self: end; max-width: 380px; width: 100%; }
+  .timeline-row.left .timeline-dot { grid-column: 2; justify-self: center; }
+  .timeline-row.left .timeline-spacer { grid-column: 3; }
+  .timeline-row.right .timeline-spacer { grid-column: 1; }
+  .timeline-row.right .timeline-dot { grid-column: 2; justify-self: center; }
+  .timeline-row.right .timeline-card { grid-column: 3; justify-self: start; max-width: 380px; width: 100%; }
+  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg-deep); box-shadow: 0 0 10px currentColor; z-index: 2; position: relative; flex-shrink: 0; }
+  .dot-inner { position: absolute; inset: 3px; border-radius: 50%; background: white; opacity: 0.8; }
+  .timeline-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px); border-radius: 14px; overflow: hidden;
+    cursor: pointer; transition: all 0.25s; text-align: right; display: flex; align-items: center;
+  }
+  .timeline-card:hover { background: var(--glass-hover); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .tc-accent { width: 4px; align-self: stretch; flex-shrink: 0; }
+  .tc-body { padding: 14px 16px; flex: 1; }
+  .tc-order { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .tc-name { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+  .tc-en { font-size: 0.72rem; color: var(--text-muted); direction: ltr; margin-bottom: 4px; }
+  .tc-period { font-size: 0.75rem; color: var(--text-secondary); }
+  .tc-arrow { color: var(--text-muted); margin-left: 10px; margin-right: 6px; transition: transform 0.2s; flex-shrink: 0; }
+  .tc-arrow.open { transform: rotate(-90deg); }
+
+  /* Artists Drawer */
+  .artists-drawer {
+    position: fixed; top: var(--navbar-h); left: 0; bottom: 0; width: 380px; z-index: 200;
+    display: flex; flex-direction: column; overflow: hidden;
+    border-right: 1px solid var(--glass-border); border-radius: 0;
+    background: rgba(5, 15, 35, 0.92); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+    box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+  }
+  .drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 16px; border-bottom: 2px solid; flex-shrink: 0; }
+  .drawer-title-wrap { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .drawer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .drawer-title { font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 2px; }
+  .drawer-period { font-size: 0.75rem; color: var(--text-muted); }
+  .drawer-close { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary); border-radius: 8px; padding: 7px; cursor: pointer; transition: all 0.2s; display: flex; flex-shrink: 0; }
+  .drawer-close:hover { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+  .drawer-desc { padding: 14px 20px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+  .drawer-artists-heading { display: flex; align-items: center; gap: 7px; padding: 12px 20px 8px; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); flex-shrink: 0; border-bottom: 1px solid var(--glass-border); }
+  .drawer-artists-list { flex: 1; overflow-y: auto; padding: 8px 10px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .drawer-artists-list::-webkit-scrollbar { width: 4px; }
+  .drawer-artists-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+  .drawer-artist-row { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; color: inherit; background: transparent; border: 1px solid transparent; transition: all 0.15s; cursor: pointer; }
+  .drawer-artist-row:hover { background: rgba(255,255,255,0.05); border-color: var(--glass-border); }
+  .drawer-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+  .drawer-artist-info { flex: 1; min-width: 0; }
+  .drawer-artist-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .drawer-artist-sub { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .drawer-arrow { color: var(--text-muted); flex-shrink: 0; }
+  .drawer-empty { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+  .drawer-overlay { position: fixed; inset: 0; top: var(--navbar-h); background: rgba(0,0,0,0.4); z-index: 199; display: none; }
+  .drawer-overlay.show { display: block; }
+
+  /* Artist Page */
+  .artist-page { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+  .artist-hero { display: flex; gap: 28px; padding: 28px; margin-bottom: 32px; }
+  .ah-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+  .ah-initials {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-glow), var(--blue-bright));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; font-weight: 800; color: white;
+  }
+  .ah-info { flex: 1; }
+  .ah-name { font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+  .ah-name-en { font-size: 0.95rem; color: var(--text-muted); direction: ltr; margin-bottom: 14px; }
+  .ah-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .ah-badge { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 0.8rem; color: var(--text-secondary); }
+  .ah-bio { font-size: 0.93rem; line-height: 1.9; color: var(--text-secondary); }
+  .artworks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+  .artwork-card { overflow: hidden; }
+  .artwork-img { width: 100%; height: 180px; object-fit: cover; }
+  .artwork-info { padding: 14px; }
+  .artwork-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; }
+  .artwork-year { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+  .artwork-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+  .artwork-clickable { cursor: zoom-in; transition: opacity 0.2s; }
+  .artwork-clickable:hover { opacity: 0.9; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); text-decoration: none; font-size: 0.88rem; margin-bottom: 24px; transition: color 0.2s; padding: 8px 0; }
+  .back-btn:hover { color: var(--blue-bright); }
+
+  /* Articles Page */
+  .articles-page { max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+  .page-header { text-align: center; margin-bottom: 48px; }
+  .page-title { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .page-sub { color: var(--text-secondary); }
+  .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .article-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .article-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+  .article-cover { width: 100%; height: 200px; object-fit: cover; }
+  .article-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+  .article-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.5; }
+  .article-excerpt { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; flex: 1; }
+  .article-detail-page { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+  .ad-cover { width: 100%; max-height: 360px; object-fit: cover; }
+  .ad-body { padding: 32px; }
+  .ad-title { font-size: 1.9rem; font-weight: 800; line-height: 1.4; margin-bottom: 16px; }
+  .ad-date { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-muted); }
+  .ad-excerpt { font-size: 1rem; color: var(--text-secondary); line-height: 1.9; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--glass-border); font-weight: 500; }
+  .ad-content { font-size: 0.95rem; line-height: 2; color: var(--text-secondary); white-space: pre-wrap; }
+
+  /* Admin Page */
+  .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .login-card { max-width: 420px; width: 100%; padding: 40px; text-align: center; }
+  .login-icon { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 20px; background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3); display: flex; align-items: center; justify-content: center; color: var(--blue-bright); }
+  .login-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
+  .login-sub { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 28px; }
+  .login-form { text-align: right; display: flex; flex-direction: column; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+  .form-input {
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.2s; direction: rtl;
+  }
+  .form-input:focus { border-color: var(--blue-bright); }
+  .form-input::placeholder { color: var(--text-muted); }
+  .form-textarea { width: 100%; padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.2s; resize: vertical; min-height: 80px; direction: rtl; }
+  .form-textarea:focus { border-color: var(--blue-bright); }
+  .form-select { padding: 10px 14px; border-radius: 10px; background: rgba(10,22,40,0.8); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; cursor: pointer; direction: rtl; }
+  .form-select:focus { border-color: var(--blue-bright); }
+  .form-error { color: #f87171; font-size: 0.82rem; text-align: center; }
+  .color-picker { width: 48px; height: 40px; border-radius: 8px; border: 1px solid var(--glass-border); cursor: pointer; background: none; padding: 2px; }
+  .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .form-row .form-input, .form-row .form-select { flex: 1; min-width: 140px; }
+  .form-row-inline { align-items: center; justify-content: space-between; }
+  .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.88rem; color: var(--text-secondary); }
+  .checkbox-label input { accent-color: var(--blue-bright); width: 16px; height: 16px; }
+  .input-wrapper { position: relative; }
+  .input-wrapper .form-input { padding-left: 40px; }
+  .pw-toggle { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; }
+
+  .admin-page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .admin-header { margin-bottom: 32px; }
+  .admin-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; }
+  .admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .admin-tab { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 10px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary); font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.18s; }
+  .admin-tab:hover { background: var(--glass-hover); color: var(--text-primary); }
+  .admin-tab.active { background: rgba(79,142,247,0.15); border-color: rgba(79,142,247,0.4); color: var(--blue-bright); }
+  .admin-section { display: flex; flex-direction: column; gap: 20px; }
+  .admin-form { padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .form-section-title { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .admin-list { display: flex; flex-direction: column; gap: 8px; }
+  .admin-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; flex-wrap: wrap; }
+  .row-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .published-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--glass-border); flex-shrink: 0; }
+  .published-dot.pub { background: #4ade80; }
+  .row-name { flex: 1; font-size: 0.9rem; font-weight: 600; }
+  .row-meta { font-size: 0.78rem; color: var(--text-muted); }
+  .row-actions { display: flex; gap: 6px; margin-right: auto; }
+  .artist-row-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(79,142,247,0.15); color: var(--blue-bright); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+  .btn-sm { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 7px; font-family: inherit; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.18s; border: none; }
+  .btn-sm.btn-ghost { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary); }
+  .btn-sm.btn-ghost:hover { background: var(--glass-hover); color: var(--text-primary); }
+  .btn-sm.btn-success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+  .btn-sm.btn-danger { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #f87171; }
+  .btn-sm.btn-danger:hover { background: rgba(239,68,68,0.2); }
+  .artworks-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .artwork-admin-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 10px; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+  .aw-thumb { width: 100%; height: 120px; object-fit: cover; }
+  .aw-info { padding: 10px; flex: 1; }
+  .aw-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+  .aw-year { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* Image Upload */
+  .image-upload { display: flex; flex-direction: column; gap: 8px; }
+  .upload-trigger {
+    display: flex; align-items: center; gap: 10px; justify-content: center;
+    padding: 20px; border-radius: 12px; border: 2px dashed var(--glass-border);
+    background: var(--glass-bg); color: var(--text-secondary);
+    font-family: inherit; font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+  }
+  .upload-trigger:hover { border-color: var(--blue-bright); color: var(--text-primary); background: rgba(255,255,255,0.06); }
+  .upload-trigger:disabled { opacity: 0.5; cursor: not-allowed; }
+  .upload-preview { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); }
+  .upload-preview-img { width: 100%; height: 140px; object-fit: cover; display: block; }
+  .upload-remove {
+    position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(239,68,68,0.8); border: none; color: white; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .upload-remove:hover { background: rgba(239,68,68,1); }
+  .upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); }
+  .upload-overlay.done { background: rgba(0,0,0,0.3); color: #4ade80; }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 500;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .lightbox-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+  .lightbox-toolbar {
+    position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; z-index: 2;
+  }
+  .lightbox-counter { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
+  .lightbox-tools { display: flex; align-items: center; gap: 8px; }
+  .lightbox-tools button { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--text-secondary); border-radius: 8px; padding: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .lightbox-tools button:hover { background: rgba(255,255,255,0.15); color: var(--text-primary); }
+  .lightbox-tools button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .lightbox-zoom { font-size: 0.78rem; color: var(--text-muted); min-width: 36px; text-align: center; }
+  .lightbox-close { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--text-secondary); border-radius: 8px; padding: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .lightbox-close:hover { background: rgba(239,68,68,0.2); color: #f87171; border-color: rgba(239,68,68,0.3); }
+  .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--text-primary); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+  .lightbox-nav:hover { background: rgba(255,255,255,0.15); }
+  .lightbox-prev { left: 16px; }
+  .lightbox-next { right: 16px; }
+  .lightbox-stage { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden; padding: 60px 80px; }
+  .lightbox-img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; transition: transform 0.15s ease-out; user-select: none; }
+  .lightbox-caption { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 20px 24px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); text-align: center; }
+  .lightbox-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .lightbox-year { font-size: 0.85rem; color: var(--text-muted); }
+  .lightbox-desc { font-size: 0.82rem; color: var(--text-secondary); margin-top: 8px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+  /* Animations */
+  .fade-in { animation: fadeIn 0.4s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .slide-in { animation: slideIn 0.3s ease-out; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* Page transitions */
+  .page { animation: fadeIn 0.3s ease-out; }
+  .page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; color: var(--text-secondary); }
+  .empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 60px 40px; text-align: center; color: var(--text-secondary); max-width: 500px; margin: 40px auto; }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .timeline-line { display: none; }
+    .timeline-row { grid-template-columns: 1fr; gap: 0; }
+    .timeline-row .timeline-dot { display: none; }
+    .timeline-row .timeline-spacer { display: none; }
+    .timeline-row.left .timeline-card, .timeline-row.right .timeline-card { grid-column: 1; grid-row: 1; max-width: 100%; justify-self: stretch; }
+    .navbar-links .nav-link span { display: none; }
+    .artist-hero { flex-direction: column; align-items: center; text-align: center; }
+    .ah-meta { justify-content: center; }
+    .search-bar { max-width: 200px; }
+    .search-dropdown { width: 320px; right: -50px; }
+    .artists-drawer { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Icons (inline SVG) ──
+const Icon = ({ name, size = 16 }) => {
+  const icons = {
+    search: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+    x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>,
+    palette: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>,
+    users: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    image: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>,
+    home: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>,
+    book: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>,
+    shield: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>,
+    arrowRight: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
+    arrowLeft: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>,
+    chevronRight: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>,
+    chevronLeft: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>,
+    zoomIn: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>,
+    zoomOut: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>,
+    calendar: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/></svg>,
+    globe: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>,
+    logIn: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>,
+    plus: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+    trash: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>,
+    edit: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>,
+    save: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>,
+    eye: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
+    eyeOff: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="M2 2l20 20"/></svg>,
+    logOut: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>,
+    user: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  };
+  return icons[name] || null;
+};
+
+// ── Mock Data ──
+const STYLES = [
+  { id: 1, name: "رنسانس اولیه", nameEn: "Early Renaissance", period: "قرن ۱۵ میلادی", color: "#ef4444", description: "شروع دوباره هنر کلاسیک در ایتالیا با تمرکز بر پرسپکتیو و آناتومی.", order: 1 },
+  { id: 2, name: "رنسانس عالی", nameEn: "High Renaissance", period: "۱۴۹۰ تا ۱۵۲۷", color: "#f59e0b", description: "اوج هنر رنسانس با آثار لئوناردو، میکل‌آنژ و رافائل.", order: 2 },
+  { id: 3, name: "مانریسم", nameEn: "Mannerism", period: "قرن ۱۶ میلادی", color: "#a855f7", description: "سبک هنری با تناسبات غیرطبیعی و رنگ‌های عجیب.", order: 3 },
+  { id: 4, name: "باروک", nameEn: "Baroque", period: "۱۶۰۰ تا ۱۷۵۰", color: "#22c55e", description: "درام، حرکت و نور در نقاشی‌های بزرگ مقیاس.", order: 4 },
+  { id: 5, name: "رئالیسم", nameEn: "Realism", period: "۱۸۴۰ تا ۱۸۸۰", color: "#3b82f6", description: "نمایش واقعیت زندگی روزمره بدون ایده‌آل‌سازی.", order: 5 },
+  { id: 6, name: "امپرسیونیسم", nameEn: "Impressionism", period: "۱۸۶۰ تا ۱۸۹۰", color: "#06b6d4", description: "تمرکز بر نور و رنگ با لکه‌های رنگی آزاد.", order: 6 },
+  { id: 7, name: "پست‌امپرسیونیسم", nameEn: "Post-Impressionism", period: "۱۸۸۰ تا ۱۹۰۰", color: "#ec4899", description: "گسترش امپرسیونیسم با ساختار و نمادگرایی.", order: 7 },
+  { id: 8, name: "کوبیسم", nameEn: "Cubism", period: "۱۹۰۷ تا ۱۹۲۰", color: "#6366f1", description: "شکستن فرم‌ها به هندسه‌های ساده.", order: 8 },
+];
+
+const ARTISTS = [
+  { id: 1, name: "لئوناردو داوینچی", nameEn: "Leonardo da Vinci", nationality: "ایتالیایی", birthYear: "۱۴۵۲", deathYear: "۱۵۱۹", bio: "نابغه رنسانس، نقاش، مخترع و دانشمند. آفریننده مونالیزا و شام آخر.", photoUrl: "", styleId: 2 },
+  { id: 2, name: "میکل‌آنژ", nameEn: "Michelangelo", nationality: "ایتالیایی", birthYear: "۱۴۷۵", deathYear: "۱۵۶۴", bio: "مجسمه‌ساز، نقاش و معمار برجسته رنسانس. آفریننده مجسمه داوود و نقاشی آفرینش آدم.", photoUrl: "", styleId: 2 },
+  { id: 3, name: "رافائل", nameEn: "Raphael", nationality: "ایتالیایی", birthYear: "۱۴۸۳", deathYear: "۱۵۲۰", bio: "یکی از سه نقاش بزرگ رنسانس عالی. معروف به آثار مذهبی و پرتره‌های زیبا.", photoUrl: "", styleId: 2 },
+  { id: 4, name: "کاراواجو", nameEn: "Caravaggio", nationality: "ایتالیایی", birthYear: "۱۵۷۱", deathYear: "۱۶۱۰", bio: "نقاش پیشگام باروک با استفاده دراماتیک از نور و سایه.", photoUrl: "", styleId: 4 },
+  { id: 5, name: "کلود مونه", nameEn: "Claude Monet", nationality: "فرانسوی", birthYear: "۱۸۴۰", deathYear: "۱۹۲۶", bio: "پدر امپرسیونیسم فرانسوی. نقاش سری نقاشی‌های نیلوفر آبی.", photoUrl: "", styleId: 6 },
+  { id: 6, name: "وینسنت ون گوگ", nameEn: "Vincent van Gogh", nationality: "هلندی", birthYear: "۱۸۵۳", deathYear: "۱۸۹۰", bio: "نقاش پسا-امپرسیونیست با رنگ‌های زنده و شاخه‌های زیتون.", photoUrl: "", styleId: 7 },
+];
+
+const ARTWORKS = [
+  { id: 1, title: "مونالیزا", titleEn: "Mona Lisa", year: "۱۵۰۳", description: "معروف‌ترین پرتره جهان با لبخند مرموز.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/402px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", artistId: 1 },
+  { id: 2, title: "شام آخر", titleEn: "The Last Supper", year: "۱۴۹۸", description: "تصویر آخرین شام عیسی با حواریون.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/%C3%9Altima_Cena_-_Da_Vinci_5.jpg/640px-%C3%9Altima_Cena_-_Da_Vinci_5.jpg", artistId: 1 },
+  { id: 3, title: "داوود", titleEn: "David", year: "۱۵۰۴", description: "شاهکار مجسمه‌سازی رنسانس از داستان داوود و جالوت.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Michelangelo_David_-_3.jpg/340px-Michelangelo_David_-_3.jpg", artistId: 2 },
+  { id: 4, title: "آفرینش آدم", titleEn: "The Creation of Adam", year: "۱۵۱۲", description: "نقاشی سقف کلیسای سیستین با صحنه آفرینش آدم.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/640px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg", artistId: 2 },
+  { id: 5, title: "مدرسه آتن", titleEn: "The School of Athens", year: "۱۵۰۹", description: "نقاشی مشهور رافائل از فیلسوفان یونان.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/La_scuola_di_Atene.jpg/640px-La_scuola_di_Atene.jpg", artistId: 3 },
+  { id: 6, title: "نقاشی نیلوفرهای آبی", titleEn: "Water Lilies", year: "۱۹۰۶", description: "سری نقاشی‌های معروف مونه از باغ نیلوفر.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/640px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg", artistId: 5 },
+  { id: 7, title: "شب پرستاره", titleEn: "The Starry Night", year: "۱۸۸۹", description: "شاهکار ون گوگ از آسمان شب با چرخش ستارگان.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/640px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg", artistId: 6 },
+  { id: 8, title: "آفتاب‌گردان", titleEn: "Sunflowers", year: "۱۸۸۸", description: "سری نقاشی‌های گل آفتاب‌گردان در گلدان.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/340px-Vincent_Willem_van_Gogh_127.jpg", artistId: 6 },
+];
+
+const ARTICLES = [
+  { id: 1, title: "رنسانس: تولد دوباره هنر", slug: "renaissance-birth", excerpt: "دوره‌ای که هنر از قرون وسطی به سوی نور و انسان حرکت کرد.", content: "رنسانس دوره‌ای تاریخی از سده ۱۴ تا ۱۷ میلادی است که در آن هنر، علم و فلسفه دوباره شکوفا شدند. این جنبش در ایتالیا آغاز شد و سپس به سراسر اروپا گسترش یافت. نقاشان رنسانس تمرکز خود را از صرفاً مذهبی به سمت انسان و طبیعت معطوف کردند.\n\nاز مهم‌ترین نوآوری‌های این دوره می‌توان به کشف پرسپکتیو خطی، مطالعه دقیق آناتومی بدن انسان، و استفاده از روغن در نقاشی اشاره کرد.", coverUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/La_scuola_di_Atene.jpg/640px-La_scuola_di_Atene.jpg", published: true, createdAt: "۱۴۰۲/۰۵/۱۲" },
+  { id: 2, title: "امپرسیونیسم: نور و رنگ", slug: "impressionism-light", excerpt: "چگونه یک جنبش هنری نگاه ما به جهان را تغییر داد.", content: "امپرسیونیسم جنبشی هنری در سده ۱۹ میلادی بود که هنرمندان آن به جای ترسیم دقیق جزئیات، بر القای احساس و لحظه از طریق نور و رنگ تمرکز کردند.\n\nکلود مونه با نقاشی 'دریافت' (Impression, Sunrise) نام این جنبش را به وجود آورد. هنرمندان امپرسیونیست معمولاً در فضای باز (Plein Air) نقاشی می‌کشیدند و از رنگ‌های خالص و لکه‌های کوچک برای خلق اثر استفاده می‌کردند.", coverUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/640px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg", published: true, createdAt: "۱۴۰۲/۰۶/۰۳" },
+  { id: 3, title: "معرفی پست‌امپرسیونیسم", slug: "post-impressionism-intro", excerpt: "از ون گوگ تا سزان: هنرمندانی که مرزهای امپرسیونیسم را در نوردیدند.", content: "پست‌امپرسیونیسم به گروهی از هنرمندان در اواخر سده ۱۹ گفته می‌شود که از امپرسیونیسم فراتر رفتند و به دنبال ساختار، نماد و عاطفه در آثار خود بودند.\n\nونسنت ون گوگ با رنگ‌های زنده و شکل‌های تکانشی، پل سزان با هندسه و فرم، و پل گوگن با نمادگرایی و رنگ‌های تخت، هر یک مسیر جدیدی در هنر گشودند.", coverUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/640px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg", published: true, createdAt: "۱۴۰۲/۰۷/۱۸" },
+];
+
+// ── State Management ──
+let state = {
+  page: 'home',
+  params: {},
+  token: localStorage.getItem('dibache_token') || null,
+  username: localStorage.getItem('dibache_user') || null,
+  lightboxIndex: null,
+  lightboxImages: [],
+  searchQuery: '',
+  searchResults: null,
+  searchLoading: false,
+  uploads: JSON.parse(localStorage.getItem('dibache_uploads') || '[]'),
+};
+
+const listeners = new Set();
+function setState(updater) {
+  if (typeof updater === 'function') state = { ...state, ...updater(state) };
+  else state = { ...state, ...updater };
+  listeners.forEach(fn => fn(state));
+}
+function useGlobalState() {
+  const [s, setS] = useState(state);
+  useEffect(() => {
+    const fn = ns => setS({ ...ns });
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }, []);
+  return s;
+}
+
+function navigate(page, params = {}) {
+  setState({ page, params });
+  window.scrollTo(0, 0);
+}
+
+function getArtistArtworks(artistId) {
+  return ARTWORKS.filter(a => a.artistId === artistId);
+}
+
+function getStyleArtists(styleId) {
+  return ARTISTS.filter(a => a.styleId === styleId);
+}
+
+function searchData(q) {
+  const pattern = q.toLowerCase();
+  const styles = STYLES.filter(s => s.name.includes(q) || s.nameEn.toLowerCase().includes(pattern) || s.period.includes(q)).slice(0, 10);
+  const artists = ARTISTS.filter(a => a.name.includes(q) || a.nameEn.toLowerCase().includes(pattern) || a.nationality.includes(q) || a.bio.includes(q)).slice(0, 10);
+  const artworks = ARTWORKS.filter(aw => aw.title.includes(q) || aw.titleEn.toLowerCase().includes(pattern) || aw.description.includes(q)).slice(0, 10);
+  return { styles, artists, artworks, query: q };
+}
+
+// ── SearchBar Component ──
+function SearchBar() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (query.trim().length >= 2) {
+        setLoading(true);
+        const r = searchData(query.trim());
+        setResults(r);
+        setLoading(false);
+      } else {
+        setResults(null);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  useEffect(() => {
+    function onClick(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
+  function goToResult(type, id) {
+    setOpen(false); setQuery(''); setResults(null);
+    if (type === 'style') navigate('styles');
+    else if (type === 'artist') navigate('artist', { id });
+    else if (type === 'artwork') {
+      const aw = ARTWORKS.find(a => a.id === id);
+      if (aw) navigate('artist', { id: aw.artistId });
+    }
+  }
+
+  const total = (results?.styles?.length || 0) + (results?.artists?.length || 0) + (results?.artworks?.length || 0);
+
+  return (
+    <div ref={containerRef} className="search-container">
+      <div className={`search-bar ${open ? 'open' : ''}`}>
+        <Icon name="search" size={16} />
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="جستجو در هنرمندان، سبک‌ها و آثار..."
+          value={query}
+          onChange={e => { setQuery(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          className="search-input"
+        />
+        {query && (
+          <button className="search-clear" onClick={() => { setQuery(''); setResults(null); inputRef.current?.focus(); }}>
+            <Icon name="x" size={14} />
+          </button>
+        )}
+      </div>
+      {open && (query.trim().length >= 2 || results) && (
+        <div className="search-dropdown">
+          {loading ? (
+            <div className="search-loading"><div className="spinner" style={{ width: 24, height: 24 }} /></div>
+          ) : total === 0 ? (
+            <p className="search-empty">نتیجه‌ای یافت نشد</p>
+          ) : (
+            <>
+              {results?.styles?.length > 0 && (
+                <div className="search-group">
+                  <div className="search-group-title"><Icon name="palette" size={13} /> سبک‌ها</div>
+                  {results.styles.map(s => (
+                    <button key={s.id} className="search-item" onClick={() => goToResult('style', s.id)}>
+                      <span className="search-dot" style={{ background: s.color }} />
+                      <span className="search-item-name">{s.name}</span>
+                      <span className="search-item-meta">{s.period}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {results?.artists?.length > 0 && (
+                <div className="search-group">
+                  <div className="search-group-title"><Icon name="users" size={13} /> هنرمندان</div>
+                  {results.artists.map(a => (
+                    <button key={a.id} className="search-item" onClick={() => goToResult('artist', a.id)}>
+                      <span className="search-avatar">{a.name?.charAt(0)}</span>
+                      <span className="search-item-name">{a.name}</span>
+                      <span className="search-item-meta">{a.nationality}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {results?.artworks?.length > 0 && (
+                <div className="search-group">
+                  <div className="search-group-title"><Icon name="image" size={13} /> آثار</div>
+                  {results.artworks.map(aw => (
+                    <button key={aw.id} className="search-item" onClick={() => goToResult('artwork', aw.id)}>
+                      <span className="search-item-name">{aw.title}</span>
+                      <span className="search-item-meta">{aw.year}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ImageUpload Component ──
+function ImageUpload({ value, onChange, label = "تصویر" }) {
+  const [uploading, setUploading] = useState(false);
+  const [done, setDone] = useState(false);
+  const inputRef = useRef(null);
+
+  const handleFile = async (file) => {
+    if (!file.type.startsWith('image/')) return;
+    setUploading(true); setDone(false);
+    // Simulate upload with file reader
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const url = reader.result;
+        onChange(url);
+        setDone(true);
+        setTimeout(() => setDone(false), 1500);
+        // Save to localStorage uploads
+        const uploads = JSON.parse(localStorage.getItem('dibache_uploads') || '[]');
+        uploads.push({ name: file.name, url, size: file.size, date: new Date().toISOString() });
+        localStorage.setItem('dibache_uploads', JSON.stringify(uploads));
+      };
+      reader.readAsDataURL(file);
+    } catch (e) {
+      console.error('Upload failed', e);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+    e.target.value = '';
+  };
+
+  const clear = () => onChange('');
+
+  return (
+    <div className="image-upload">
+      <label className="form-label">{label}</label>
+      {value ? (
+        <div className="upload-preview">
+          <img src={value} alt="preview" className="upload-preview-img" />
+          <button className="upload-remove" onClick={clear} type="button">
+            <Icon name="x" size={14} />
+          </button>
+          {uploading && <div className="upload-overlay"><div className="spinner" style={{ width: 20, height: 20 }} /></div>}
+          {done && <div className="upload-overlay done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5"/></svg></div>}
+        </div>
+      ) : (
+        <button className="upload-trigger" onClick={() => inputRef.current?.click()} type="button" disabled={uploading}>
+          {uploading ? (
+            <><div className="spinner" style={{ width: 18, height: 18 }} /><span>در حال آپلود...</span></>
+          ) : (
+            <><Icon name="image" size={20} /><span>انتخاب تصویر</span></>
+          )}
+        </button>
+      )}
+      <input ref={inputRef} type="file" accept="image/*" capture={false} onChange={onFileChange} style={{ display: 'none' }} />
+    </div>
+  );
+}
+
+// ── Lightbox Component ──
+function Lightbox({ images, initialIndex, onClose }) {
+  const [idx, setIdx] = useState(initialIndex);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const current = images[idx];
+
+  const prev = useCallback(() => {
+    setIdx(i => i > 0 ? i - 1 : images.length - 1);
+    setZoom(1); setPan({ x: 0, y: 0 });
+  }, [images.length]);
+
+  const next = useCallback(() => {
+    setIdx(i => i < images.length - 1 ? i + 1 : 0);
+    setZoom(1); setPan({ x: 0, y: 0 });
+  }, [images.length]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, prev, next]);
+
+  const onWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    setZoom(z => Math.max(1, Math.min(4, z + delta)));
+  };
+
+  const onMouseDown = (e) => {
+    if (zoom > 1) { setIsDragging(true); setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y }); }
+  };
+  const onMouseMove = (e) => {
+    if (isDragging && zoom > 1) setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+  };
+  const onMouseUp = () => setIsDragging(false);
+
+  return (
+    <div className="lightbox fade-in">
+      <div className="lightbox-backdrop" onClick={onClose} />
+      <div className="lightbox-toolbar">
+        <span className="lightbox-counter">{idx + 1} / {images.length}</span>
+        <div className="lightbox-tools">
+          <button onClick={() => setZoom(z => Math.max(1, z - 0.25))} disabled={zoom <= 1}><Icon name="zoomOut" size={18} /></button>
+          <span className="lightbox-zoom">{Math.round(zoom * 100)}%</span>
+          <button onClick={() => setZoom(z => Math.min(4, z + 0.25))} disabled={zoom >= 4}><Icon name="zoomIn" size={18} /></button>
+        </div>
+        <button className="lightbox-close" onClick={onClose}><Icon name="x" size={20} /></button>
+      </div>
+      {images.length > 1 && (
+        <>
+          <button className="lightbox-nav lightbox-prev" onClick={prev}><Icon name="chevronLeft" size={28} /></button>
+          <button className="lightbox-nav lightbox-next" onClick={next}><Icon name="chevronRight" size={28} /></button>
+        </>
+      )}
+      <div className="lightbox-stage" onWheel={onWheel} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}>
+        <img
+          key={current.src}
+          src={current.src}
+          alt={current.title || ''}
+          className="lightbox-img"
+          style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`, cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in' }}
+          draggable={false}
+        />
+      </div>
+      {(current.title || current.year || current.description) && (
+        <div className="lightbox-caption">
+          {current.title && <h3 className="lightbox-title">{current.title}</h3>}
+          {current.year && <span className="lightbox-year">{current.year}</span>}
+          {current.description && <p className="lightbox-desc">{current.description}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Navbar ──
+function Navbar() {
+  const s = useGlobalState();
+  const isAdmin = !!s.token;
+  const username = s.username;
+
+  const links = [
+    { page: 'home', label: 'خانه', icon: 'home' },
+    { page: 'styles', label: 'سبک‌ها', icon: 'palette' },
+    { page: 'articles', label: 'مقالات', icon: 'book' },
+    { page: 'admin', label: isAdmin ? 'پنل ادمین' : 'ورود ادمین', icon: 'shield' },
+  ];
+
+  return (
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <a href="#" className="navbar-logo" onClick={e => { e.preventDefault(); navigate('home'); }}>
+          <span className="navbar-logo-icon">🎨</span>
+          <span className="navbar-logo-text">دیباچه هنر</span>
+        </a>
+        <div className="navbar-links">
+          {links.map(({ page, label, icon }) => (
+            <a key={page} href="#" className={`nav-link ${s.page === page ? 'active' : ''}`} onClick={e => { e.preventDefault(); navigate(page); }}>
+              <Icon name={icon} size={16} />
+              <span>{label}</span>
+            </a>
+          ))}
+        </div>
+        <SearchBar />
+        {isAdmin && (
+          <div className="navbar-user">
+            <div className="navbar-username">
+              <Icon name="user" size={14} />
+              <span>{username}</span>
+            </div>
+            <button className="nav-logout" onClick={() => { localStorage.removeItem('dibache_token'); localStorage.removeItem('dibache_user'); setState({ token: null, username: null }); }}>
+              <Icon name="logOut" size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+// ── Home Page ──
+function HomePage() {
+  return (
+    <div className="home-page">
+      <div className="hero">
+        <div className="hero-content">
+          <span className="hero-badge">دانشنامه جامع هنر</span>
+          <h1 className="hero-title">دیباچه <span className="hero-title-accent">هنر</span></h1>
+          <p className="hero-desc">سفری از رنسانس اولیه تا مینیمالیسم — ۲۳ سبک هنری، صدها هنرمند بزرگ جهان</p>
+          <div className="hero-actions">
+            <a href="#" className="btn-primary" onClick={e => { e.preventDefault(); navigate('styles'); }}>
+              <Icon name="palette" size={16} /> کاوش سبک‌ها
+            </a>
+            <a href="#" className="btn-ghost" onClick={e => { e.preventDefault(); navigate('articles'); }}>
+              <Icon name="book" size={16} /> مقالات هنری
+            </a>
+          </div>
+        </div>
+        <div className="hero-stats">
+          <div className="stat-card glass">
+            <Icon name="book" size={20} />
+            <span className="stat-num">3</span>
+            <span className="stat-lbl">مقاله</span>
+          </div>
+          <div className="stat-card glass">
+            <Icon name="users" size={20} />
+            <span className="stat-num">6</span>
+            <span className="stat-lbl">هنرمند</span>
+          </div>
+          <div className="stat-card glass">
+            <Icon name="palette" size={20} />
+            <span className="stat-num">8</span>
+            <span className="stat-lbl">سبک هنری</span>
+          </div>
+        </div>
+      </div>
+      <div className="home-section">
+        <div className="section-header">
+          <h2 className="section-title">سبک‌های هنری</h2>
+          <a href="#" className="section-link" onClick={e => { e.preventDefault(); navigate('styles'); }}>مشاهده همه →</a>
+        </div>
+        <div className="styles-preview-grid">
+          {STYLES.slice(0, 6).map(style => (
+            <a key={style.id} href="#" className="style-preview-card glass" onClick={e => { e.preventDefault(); navigate('styles'); }}>
+              <div className="spc-color" style={{ background: style.color }} />
+              <div className="spc-body">
+                <div className="spc-name">{style.name}</div>
+                <div className="spc-period">{style.period}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      <div className="home-section">
+        <div className="section-header">
+          <h2 className="section-title">مقالات هنری</h2>
+          <a href="#" className="section-link" onClick={e => { e.preventDefault(); navigate('articles'); }}>مشاهده همه →</a>
+        </div>
+        <div className="articles-preview-grid">
+          {ARTICLES.filter(a => a.published).slice(0, 3).map(article => (
+            <a key={article.id} href="#" className="article-preview-card glass" onClick={e => { e.preventDefault(); navigate('article-detail', { slug: article.slug }); }}>
+              {article.coverUrl && <img src={article.coverUrl} alt={article.title} className="apc-cover" />}
+              <div className="apc-body">
+                <h3 className="apc-title">{article.title}</h3>
+                <p className="apc-excerpt">{article.excerpt}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Styles Page ──
+function StylesPage() {
+  const [activeStyle, setActiveStyle] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const openStyle = (style) => {
+    setActiveStyle(style);
+    setDrawerOpen(true);
+  };
+
+  return (
+    <div className="styles-page">
+      <div className="styles-header">
+        <h1 className="styles-title">سبک‌های هنری</h1>
+        <p className="styles-sub">از رنسانس اولیه تا مینیمالیسم — یک سفر تاریخی در هنر جهان</p>
+      </div>
+      <div className="timeline-wrapper">
+        <div className="timeline-line" />
+        <div className="timeline-items">
+          {STYLES.map((style, i) => (
+            <div key={style.id} className={`timeline-row ${i % 2 === 0 ? 'right' : 'left'}`}>
+              {i % 2 === 0 && <div className="timeline-spacer" />}
+              <div className="timeline-dot" style={{ color: style.color }}><div className="dot-inner" /></div>
+              <div className="timeline-card glass" onClick={() => openStyle(style)} style={{ '--style-color': style.color }}>
+                <div className="tc-accent" style={{ background: style.color }} />
+                <div className="tc-body">
+                  <div className="tc-order">{(style.order).toString().padStart(2, '0')}</div>
+                  <div className="tc-name">{style.name}</div>
+                  <div className="tc-en">{style.nameEn}</div>
+                  <div className="tc-period">{style.period}</div>
+                </div>
+              </div>
+              {i % 2 === 1 && <div className="timeline-spacer" />}
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Artists Drawer */}
+      <div className={`drawer-overlay ${drawerOpen ? 'show' : ''}`} onClick={() => setDrawerOpen(false)} />
+      {drawerOpen && activeStyle && (
+        <div className="artists-drawer slide-in">
+          <div className="drawer-header" style={{ borderBottomColor: activeStyle.color }}>
+            <div className="drawer-title-wrap">
+              <div className="drawer-dot" style={{ background: activeStyle.color }} />
+              <div>
+                <div className="drawer-title">{activeStyle.name}</div>
+                <div className="drawer-period">{activeStyle.period}</div>
+              </div>
+            </div>
+            <button className="drawer-close" onClick={() => setDrawerOpen(false)}>
+              <Icon name="x" size={16} />
+            </button>
+          </div>
+          <div className="drawer-desc">{activeStyle.description}</div>
+          <div className="drawer-artists-heading">
+            <Icon name="users" size={14} />
+            <span>هنرمندان این سبک</span>
+          </div>
+          <div className="drawer-artists-list">
+            {getStyleArtists(activeStyle.id).length > 0 ? getStyleArtists(activeStyle.id).map(artist => (
+              <a key={artist.id} href="#" className="drawer-artist-row" onClick={e => { e.preventDefault(); setDrawerOpen(false); navigate('artist', { id: artist.id }); }}>
+                <div className="drawer-avatar" style={{ background: activeStyle.color + '20', color: activeStyle.color }}>
+                  {artist.name.charAt(0)}
+                </div>
+                <div className="drawer-artist-info">
+                  <div className="drawer-artist-name">{artist.name}</div>
+                  <div className="drawer-artist-sub">{artist.nationality} · {artist.birthYear}</div>
+                </div>
+                <Icon name="chevronRight" size={14} className="drawer-arrow" />
+              </a>
+            )) : <div className="drawer-empty">هنرمندی در این سبک ثبت نشده</div>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Artist Page ──
+function ArtistPage({ id }) {
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const artist = ARTISTS.find(a => a.id === parseInt(id));
+  if (!artist) return <div className="page-loading"><p>هنرمند یافت نشد</p></div>;
+
+  const artworks = getArtistArtworks(artist.id);
+  const artworksWithImages = artworks.filter(a => a.imageUrl);
+
+  return (
+    <div className="artist-page page">
+      <a href="#" className="back-btn" onClick={e => { e.preventDefault(); navigate('styles'); }}>
+        <Icon name="arrowRight" size={16} />
+        <span>بازگشت به سبک‌ها</span>
+      </a>
+      <div className="artist-hero glass">
+        <div className="ah-avatar">
+          {artist.photoUrl ? (
+            <img src={artist.photoUrl} alt={artist.name} className="ah-photo" />
+          ) : (
+            <div className="ah-initials">{artist.name.charAt(0)}</div>
+          )}
+        </div>
+        <div className="ah-info">
+          <h1 className="ah-name">{artist.name}</h1>
+          {artist.nameEn && <p className="ah-name-en">{artist.nameEn}</p>}
+          <div className="ah-meta">
+            {artist.nationality && <span className="ah-badge"><Icon name="globe" size={13} /> {artist.nationality}</span>}
+            {artist.birthYear && <span className="ah-badge"><Icon name="calendar" size={13} /> {artist.birthYear}{artist.deathYear ? `–${artist.deathYear}` : ''}</span>}
+          </div>
+          {artist.bio && <p className="ah-bio">{artist.bio}</p>}
+        </div>
+      </div>
+      {artworks.length > 0 && (
+        <div className="artworks-section">
+          <h2 className="section-title">آثار</h2>
+          <div className="artworks-grid">
+            {artworks.map(artwork => (
+              <div key={artwork.id} className="artwork-card glass">
+                {artwork.imageUrl && (
+                  <img
+                    src={artwork.imageUrl}
+                    alt={artwork.title}
+                    className="artwork-img artwork-clickable"
+                    onClick={() => {
+                      const imgIdx = artworksWithImages.findIndex(a => a.id === artwork.id);
+                      setLightboxIndex(imgIdx >= 0 ? imgIdx : 0);
+                    }}
+                  />
+                )}
+                <div className="artwork-info">
+                  <h3 className="artwork-title">{artwork.title}</h3>
+                  {artwork.year && <p className="artwork-year">{artwork.year}</p>}
+                  {artwork.description && <p className="artwork-desc">{artwork.description}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {artworks.length === 0 && (
+        <div className="glass empty-state">
+          <p>هنوز اثری برای این هنرمند بارگذاری نشده است</p>
+        </div>
+      )}
+      {lightboxIndex !== null && artworksWithImages.length > 0 && (
+        <Lightbox
+          images={artworksWithImages.map(a => ({ src: a.imageUrl, title: a.title, year: a.year, description: a.description }))}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Articles Page ──
+function ArticlesPage() {
+  return (
+    <div className="articles-page page">
+      <div className="page-header">
+        <h1 className="page-title">مقالات هنری</h1>
+        <p className="page-sub">مقالات و نوشته‌هایی درباره تاریخ هنر، سبک‌ها و هنرمندان</p>
+      </div>
+      <div className="articles-grid">
+        {ARTICLES.filter(a => a.published).map(article => (
+          <a key={article.id} href="#" className="article-card glass" onClick={e => { e.preventDefault(); navigate('article-detail', { slug: article.slug }); }}>
+            {article.coverUrl && <img src={article.coverUrl} alt={article.title} className="article-cover" />}
+            <div className="article-body">
+              <h3 className="article-title">{article.title}</h3>
+              <p className="article-excerpt">{article.excerpt}</p>
+              <div className="article-footer">
+                <span className="article-date"><Icon name="calendar" size={13} /> {article.createdAt}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Article Detail Page ──
+function ArticleDetailPage({ slug }) {
+  const article = ARTICLES.find(a => a.slug === slug && a.published);
+  if (!article) return <div className="page-loading"><p>مقاله یافت نشد</p></div>;
+
+  return (
+    <div className="article-detail-page page">
+      <div className="article-detail glass">
+        {article.coverUrl && <img src={article.coverUrl} alt={article.title} className="ad-cover" />}
+        <div className="ad-body">
+          <h1 className="ad-title">{article.title}</h1>
+          <div className="ad-meta">
+            <span className="ad-date"><Icon name="calendar" size={13} /> {article.createdAt}</span>
+          </div>
+          <p className="ad-excerpt">{article.excerpt}</p>
+          <div className="ad-content">{article.content}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Admin Page ──
+function AdminPage() {
+  const s = useGlobalState();
+  const [tab, setTab] = useState('styles');
+
+  if (!s.token) return <LoginForm />;
+
+  return (
+    <div className="admin-page page">
+      <div className="admin-header">
+        <h1 className="admin-title">پنل مدیریت</h1>
+        <div className="admin-tabs">
+          {[
+            { id: 'styles', label: 'سبک‌ها', icon: 'palette' },
+            { id: 'artists', label: 'هنرمندان', icon: 'users' },
+            { id: 'artworks', label: 'آثار', icon: 'image' },
+            { id: 'articles', label: 'مقالات', icon: 'book' },
+          ].map(({ id, label, icon }) => (
+            <button key={id} className={`admin-tab ${tab === id ? 'active' : ''}`} onClick={() => setTab(id)}>
+              <Icon name={icon} size={16} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="admin-content">
+        {tab === 'styles' && <StylesAdmin />}
+        {tab === 'artists' && <ArtistsAdmin />}
+        {tab === 'artworks' && <ArtworksAdmin />}
+        {tab === 'articles' && <ArticlesAdmin />}
+      </div>
+    </div>
+  );
+}
+
+function LoginForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setLoading(true); setError('');
+    // Demo: accept admin/admin
+    if (username === 'admin' && password === 'admin') {
+      const token = 'demo-token-' + Date.now();
+      localStorage.setItem('dibache_token', token);
+      localStorage.setItem('dibache_user', username);
+      setState({ token, username });
+    } else {
+      setError('نام کاربری یا رمز عبور اشتباه است');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="login-page">
+      <div className="login-card glass fade-in">
+        <div className="login-icon"><Icon name="logIn" size={32} /></div>
+        <h1 className="login-title">ورود ادمین</h1>
+        <p className="login-sub">برای مدیریت محتوا وارد شوید (admin/admin)</p>
+        <form onSubmit={submit} className="login-form">
+          <div className="form-group">
+            <label className="form-label">نام کاربری</label>
+            <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="form-input" placeholder="admin" required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">رمز عبور</label>
+            <div className="input-wrapper">
+              <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} className="form-input" placeholder="••••••••" required />
+              <button type="button" className="pw-toggle" onClick={() => setShowPw(v => !v)}><Icon name={showPw ? 'eyeOff' : 'eye'} size={16} /></button>
+            </div>
+          </div>
+          {error && <p className="form-error">{error}</p>}
+          <button type="submit" className="btn-primary w-full" disabled={loading}>
+            {loading ? 'در حال ورود...' : 'ورود'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function StylesAdmin() {
+  return (
+    <div className="admin-section">
+      <div className="admin-form glass">
+        <h3 className="form-section-title"><Icon name="plus" size={16} /> افزودن سبک جدید</h3>
+        <p className="form-label" style={{ color: 'var(--text-muted)' }}>در نسخه دمو، داده‌ها از حافظه محلی خوانده می‌شوند.</p>
+      </div>
+      <div className="admin-list">
+        {STYLES.map(s => (
+          <div key={s.id} className="admin-row glass">
+            <div className="row-dot" style={{ background: s.color }} />
+            <span className="row-name">{s.name}</span>
+            <span className="row-meta">{s.period}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArtistsAdmin() {
+  const [form, setForm] = useState({ name: '', nameEn: '', nationality: '', birthYear: '', deathYear: '', bio: '', photoUrl: '', styleId: '' });
+  return (
+    <div className="admin-section">
+      <div className="admin-form glass">
+        <h3 className="form-section-title"><Icon name="plus" size={16} /> افزودن هنرمند جدید</h3>
+        <div className="form-row">
+          <input className="form-input" placeholder="نام فارسی *" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
+          <input className="form-input" placeholder="نام انگلیسی" value={form.nameEn} onChange={e => setForm(p => ({ ...p, nameEn: e.target.value }))} />
+          <input className="form-input" placeholder="ملیت" value={form.nationality} onChange={e => setForm(p => ({ ...p, nationality: e.target.value }))} />
+        </div>
+        <div className="form-row">
+          <input className="form-input" placeholder="سال تولد" value={form.birthYear} onChange={e => setForm(p => ({ ...p, birthYear: e.target.value }))} />
+          <input className="form-input" placeholder="سال وفات" value={form.deathYear} onChange={e => setForm(p => ({ ...p, deathYear: e.target.value }))} />
+          <select className="form-select" value={form.styleId} onChange={e => setForm(p => ({ ...p, styleId: e.target.value }))}>
+            <option value="">انتخاب سبک</option>
+            {STYLES.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </div>
+        <ImageUpload label="تصویر هنرمند" value={form.photoUrl} onChange={url => setForm(p => ({ ...p, photoUrl: url }))} />
+        <textarea className="form-textarea" placeholder="بیوگرافی" value={form.bio} onChange={e => setForm(p => ({ ...p, bio: e.target.value }))} />
+        <button className="btn-primary" disabled={!form.name}>
+          <Icon name="plus" size={15} /> افزودن
+        </button>
+      </div>
+      <div className="admin-list">
+        {ARTISTS.map(a => (
+          <div key={a.id} className="admin-row glass">
+            <div className="artist-row-avatar">{a.name?.charAt(0)}</div>
+            <span className="row-name">{a.name}</span>
+            <span className="row-meta">{a.nationality}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArtworksAdmin() {
+  const [form, setForm] = useState({ title: '', titleEn: '', year: '', imageUrl: '', description: '', artistId: '' });
+  return (
+    <div className="admin-section">
+      <div className="admin-form glass">
+        <h3 className="form-section-title"><Icon name="plus" size={16} /> افزودن اثر هنری</h3>
+        <div className="form-row">
+          <input className="form-input" placeholder="عنوان فارسی *" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
+          <input className="form-input" placeholder="عنوان انگلیسی" value={form.titleEn} onChange={e => setForm(p => ({ ...p, titleEn: e.target.value }))} />
+          <input className="form-input" placeholder="سال اثر" value={form.year} onChange={e => setForm(p => ({ ...p, year: e.target.value }))} />
+          <select className="form-select" value={form.artistId} onChange={e => setForm(p => ({ ...p, artistId: e.target.value }))}>
+            <option value="">انتخاب هنرمند</option>
+            {ARTISTS.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+        </div>
+        <ImageUpload label="تصویر اثر" value={form.imageUrl} onChange={url => setForm(p => ({ ...p, imageUrl: url }))} />
+        <textarea className="form-textarea" placeholder="توضیح اثر" value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} />
+        <button className="btn-primary" disabled={!form.title}>
+          <Icon name="plus" size={15} /> افزودن
+        </button>
+      </div>
+      <div className="artworks-admin-grid">
+        {ARTWORKS.map(aw => (
+          <div key={aw.id} className="artwork-admin-card glass">
+            {aw.imageUrl && <img src={aw.imageUrl} alt={aw.title} className="aw-thumb" />}
+            <div className="aw-info">
+              <p className="aw-title">{aw.title}</p>
+              <p className="aw-year">{aw.year}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArticlesAdmin() {
+  const [form, setForm] = useState({ title: '', slug: '', excerpt: '', content: '', coverUrl: '', published: false });
+  const autoSlug = (title) => title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\u0600-\u06FF-]/g, '').slice(0, 60);
+
+  return (
+    <div className="admin-section">
+      <div className="admin-form glass">
+        <h3 className="form-section-title"><Icon name="plus" size={16} /> نوشتن مقاله جدید</h3>
+        <div className="form-row">
+          <input className="form-input" placeholder="عنوان مقاله *" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value, slug: autoSlug(e.target.value) }))} />
+          <input className="form-input" placeholder="slug (خودکار)" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} />
+        </div>
+        <ImageUpload label="تصویر کاور مقاله" value={form.coverUrl} onChange={url => setForm(p => ({ ...p, coverUrl: url }))} />
+        <textarea className="form-textarea" placeholder="خلاصه مقاله" value={form.excerpt} onChange={e => setForm(p => ({ ...p, excerpt: e.target.value }))} rows={2} />
+        <textarea className="form-textarea" placeholder="متن کامل مقاله *" value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} rows={8} />
+        <div className="form-row form-row-inline">
+          <label className="checkbox-label">
+            <input type="checkbox" checked={form.published} onChange={e => setForm(p => ({ ...p, published: e.target.checked }))} />
+            <span>منتشر شود</span>
+          </label>
+          <button className="btn-primary" disabled={!form.title || !form.slug || !form.content}>
+            <Icon name="plus" size={15} /> ذخیره مقاله
+          </button>
+        </div>
+      </div>
+      <div className="admin-list">
+        {ARTICLES.map(art => (
+          <div key={art.id} className="admin-row glass">
+            <div className={`published-dot ${art.published ? 'pub' : ''}`} />
+            <span className="row-name">{art.title}</span>
+            <span className="row-meta">{art.published ? 'منتشر شده' : 'پیش‌نویس'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Not Found ──
+function NotFound() {
+  return (
+    <div className="page-loading">
+      <h1>۴۰۴</h1>
+      <p>صفحه مورد نظر یافت نشد</p>
+      <a href="#" className="btn-primary" onClick={e => { e.preventDefault(); navigate('home'); }}>بازگشت به خانه</a>
+    </div>
+  );
+}
+
+// ── Router ──
+function Router() {
+  const s = useGlobalState();
+
+  return (
+    <div className="app-shell">
+      <Navbar />
+      <main className="app-main">
+        {s.page === 'home' && <HomePage />}
+        {s.page === 'styles' && <StylesPage />}
+        {s.page === 'artist' && <ArtistPage id={s.params.id} />}
+        {s.page === 'articles' && <ArticlesPage />}
+        {s.page === 'article-detail' && <ArticleDetailPage slug={s.params.slug} />}
+        {s.page === 'admin' && <AdminPage />}
+      </main>
+    </div>
+  );
+}
+
+// ── App ──
+function App() {
+  return <Router />;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
